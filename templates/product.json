@@ -1,4 +1,18 @@
 {
-  "sections": { "main": { "type": "main-product", "settings": {} } },
+  "sections": {
+    "main": {
+      "type": "main-product",
+      "blocks": {
+        "kicker": { "type": "kicker", "settings": {} },
+        "title": { "type": "title", "settings": {} },
+        "price": { "type": "price", "settings": {} },
+        "description": { "type": "description", "settings": {} },
+        "buy": { "type": "buy_buttons", "settings": {} },
+        "specs": { "type": "specs", "settings": {} }
+      },
+      "block_order": ["kicker", "title", "price", "description", "buy", "specs"],
+      "settings": {}
+    }
+  },
   "order": ["main"]
 }

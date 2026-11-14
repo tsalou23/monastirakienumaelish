@@ -1,47 +1,91 @@
 {%- assign p = product -%}
 {%- assign mf = p.metafields.custom -%}
+{%- assign current = p.selected_or_first_available_variant -%}
 <div class="pdp">
   {% render 'product-data', product: p %}
   <div class="ov-bg"><img src="{{ 'photo-1050.jpg' | asset_url }}" width="1200" height="1600" alt=""></div>
   <div class="ov-fig">
     {%- if mf.name_jp -%}<span class="ov-jp jp vt">{{ mf.name_jp }}</span>{%- endif -%}
-    <div class="ov-g">{% render 'garment', product: p %}</div>
-    <span class="ov-code mono">{{ mf.code }} · {{ p.type | upcase }} · ΑΠΟΒΑΘΡΑ 1</span>
+    <div class="ov-g">{% render 'product-photo', product: p, view: 'front', cls: 'g-img' %}</div>
+    <span class="ov-code mono">{% if mf.code %}{{ mf.code }} · {% endif %}{{ p.type | upcase }} · ΑΠΟΒΑΘΡΑ 1</span>
   </div>
   <div class="ov-panel">
-    <span class="mono amber" style="font-size:11px">{% if mf.code %}{{ mf.code }} · {% endif %}DROP 01 · 終電</span>
-    <div style="display:flex;flex-direction:column;gap:10px"><h1 style="margin:0;font-size:44px;font-weight:900;letter-spacing:-.045em;line-height:.92">{{ p.title }}</h1>{%- if mf.name_gr or mf.name_jp -%}<span class="gr">{{ mf.name_gr }}{% if mf.name_gr and mf.name_jp %} · {% endif %}<span class="jp">{{ mf.name_jp }}</span></span>{%- endif -%}</div>
-    <span class="ov-price" data-pdp-price>{{ p.selected_or_first_available_variant.price | money_without_trailing_zeros }}</span>
-    <div class="ov-desc">{{ p.description }}</div>
-    {%- form 'product', p, data-pdp: '' -%}
-      <input type="hidden" name="id" value="{% if p.has_only_default_variant %}{{ p.selected_or_first_available_variant.id }}{% endif %}" data-pdp-id>
-      {%- unless p.has_only_default_variant -%}
-      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:22px">
-        <div style="display:flex;justify-content:space-between" class="mono"><span style="font-size:11px">ΜΕΓΕΘΟΣ · SIZE · サイズ</span><span class="muted" style="font-size:11px">OVERSIZED FIT</span></div>
-        <div class="szs" role="group" aria-label="Choose a size" style="grid-template-columns:repeat({{ p.variants.size | at_most: 6 }},minmax(0,1fr))">
-          {%- for v in p.variants -%}
-            <button type="button" class="osz" data-v="{{ v.id }}" aria-pressed="false" {% unless v.available %}disabled style="opacity:.35"{% endunless %}>{{ v.title }}</button>
-          {%- endfor -%}
-        </div>
-        <p class="err" role="alert" data-pdp-err hidden>Choose a size first · Διάλεξε μέγεθος · サイズを選択</p>
-      </div>
-      {%- endunless -%}
-      <button class="btn btn-y" type="submit" style="height:60px;width:100%" {% unless p.available %}disabled{% endunless %} data-pdp-add>{% if p.available %}ADD TO CART — {{ p.price | money_without_trailing_zeros }}{% else %}SOLD OUT · ΕΞΑΝΤΛΗΘΗΚΕ{% endif %}</button>
-    {%- endform -%}
-    <a class="btn btn-l" href="{{ routes.cart_url }}" data-cart-open style="width:100%"><span>VIEW CART (<span data-cart-count>{{ cart.item_count }}</span>)</span></a>
-    <dl class="specs">
-      {%- if mf.fabric -%}<dt>FABRIC</dt><dd>{{ mf.fabric }}</dd>{%- endif -%}
-      {%- if mf.fit -%}<dt>FIT</dt><dd>{{ mf.fit }}</dd>{%- endif -%}
-      {%- if mf.colour -%}<dt>COLOUR</dt><dd>{{ mf.colour }}</dd>{%- endif -%}
-      <dt>SHIPS</dt><dd>{{ section.settings.ships }}</dd>
-    </dl>
+    {%- for block in section.blocks -%}
+      {%- case block.type -%}
+        {%- when '@app' -%}
+          {% render block %}
+
+        {%- when 'kicker' -%}
+          <span class="mono amber" style="font-size:11px" {{ block.shopify_attributes }}>{% if mf.code %}{{ mf.code }} · {% endif %}{{ block.settings.text }}</span>
+
+        {%- when 'title' -%}
+          <div style="display:flex;flex-direction:column;gap:10px" {{ block.shopify_attributes }}>
+            <h1 class="pdp-title">{{ p.title }}</h1>
+            {%- if mf.name_gr or mf.name_jp -%}<span class="gr">{{ mf.name_gr }}{% if mf.name_gr and mf.name_jp %} · {% endif %}<span class="jp">{{ mf.name_jp }}</span></span>{%- endif -%}
+          </div>
+
+        {%- when 'price' -%}
+          <span class="ov-price" data-pdp-price {{ block.shopify_attributes }}>{{ current.price | money_without_trailing_zeros }}</span>
+
+        {%- when 'description' -%}
+          {%- if p.description != blank -%}<div class="ov-desc rte" {{ block.shopify_attributes }}>{{ p.description }}</div>{%- endif -%}
+
+        {%- when 'buy_buttons' -%}
+          <div {{ block.shopify_attributes }} style="display:flex;flex-direction:column;gap:14px">
+            {%- form 'product', p, data-pdp: '' -%}
+              <input type="hidden" name="id" value="{% if p.has_only_default_variant %}{{ current.id }}{% endif %}" data-pdp-id>
+              {%- unless p.has_only_default_variant -%}
+              <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:22px">
+                <div style="display:flex;justify-content:space-between" class="mono"><span style="font-size:11px">{{ 'product.size' | t }}</span><span class="muted" style="font-size:11px">{{ 'product.fit_note' | t }}</span></div>
+                <div class="szs" role="group" aria-label="{{ 'product.choose_size' | t }}" style="grid-template-columns:repeat({{ p.variants.size | at_most: 6 }},minmax(0,1fr))">
+                  {%- for v in p.variants -%}
+                    <button type="button" class="osz" data-v="{{ v.id }}" aria-pressed="false" {% unless v.available %}disabled style="opacity:.35"{% endunless %}>{{ v.title }}</button>
+                  {%- endfor -%}
+                </div>
+                <p class="err" role="alert" data-pdp-err hidden>{{ 'product.choose_size_error' | t }}</p>
+              </div>
+              {%- endunless -%}
+              <button class="btn btn-y" type="submit" style="height:60px;width:100%" {% unless p.available %}disabled{% endunless %} data-pdp-add>{% if p.available %}{{ 'product.add_to_cart' | t }} — {{ current.price | money_without_trailing_zeros }}{% else %}{{ 'product.sold_out' | t }}{% endif %}</button>
+            {%- endform -%}
+            {%- if block.settings.show_view_cart -%}
+              <a class="btn btn-l" href="{{ routes.cart_url }}" data-cart-open style="width:100%"><span>{{ 'product.view_cart' | t }} (<span data-cart-count>{{ cart.item_count }}</span>)</span></a>
+            {%- endif -%}
+          </div>
+
+        {%- when 'specs' -%}
+          <dl class="specs" {{ block.shopify_attributes }}>
+            {%- if mf.fabric -%}<dt>{{ 'product.fabric' | t }}</dt><dd>{{ mf.fabric }}</dd>{%- endif -%}
+            {%- if mf.fit -%}<dt>{{ 'product.fit' | t }}</dt><dd>{{ mf.fit }}</dd>{%- endif -%}
+            {%- if mf.colour -%}<dt>{{ 'product.colour' | t }}</dt><dd>{{ mf.colour }}</dd>{%- endif -%}
+            <dt>{{ 'product.ships' | t }}</dt><dd>{% if block.settings.ships != blank %}{{ block.settings.ships }}{% else %}{{ 'product.ships_value' | t }}{% endif %}</dd>
+          </dl>
+
+        {%- when 'text' -%}
+          <div class="rte" {{ block.shopify_attributes }}>{{ block.settings.text }}</div>
+      {%- endcase -%}
+    {%- endfor -%}
   </div>
 </div>
 {% schema %}
 {
   "name": "Product",
-  "settings": [
-    { "type": "text", "id": "ships", "label": "Shipping line", "default": "2–4 working days, Greece · 5–9 EU" }
+  "blocks": [
+    { "type": "@app" },
+    { "type": "kicker", "name": "Kicker", "limit": 1, "settings": [
+      { "type": "text", "id": "text", "label": "Text after the product code", "default": "DROP 01 · 終電" }
+    ] },
+    { "type": "title", "name": "Title", "limit": 1, "settings": [] },
+    { "type": "price", "name": "Price", "limit": 1, "settings": [] },
+    { "type": "description", "name": "Description", "limit": 1, "settings": [] },
+    { "type": "buy_buttons", "name": "Size + add to cart", "limit": 1, "settings": [
+      { "type": "checkbox", "id": "show_view_cart", "label": "Show view-cart button", "default": true }
+    ] },
+    { "type": "specs", "name": "Specs", "limit": 1, "settings": [
+      { "type": "text", "id": "ships", "label": "Shipping line (blank = translation default)" }
+    ] },
+    { "type": "text", "name": "Text", "settings": [
+      { "type": "richtext", "id": "text", "label": "Text" }
+    ] }
   ]
 }
 {% endschema %}

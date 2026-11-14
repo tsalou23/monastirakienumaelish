@@ -44,7 +44,7 @@
             {%- if forloop.first -%}<img class="cm-bg" src="{{ 'photo-1050.jpg' | asset_url }}" width="1200" height="1600" alt="" loading="lazy">{%- endif -%}
             {%- if t != blank -%}<span class="badge mono">{{ t }}{% if tjp != '' %} · {{ tjp }}{% endif %}</span>{%- endif -%}
             <a class="cm-open" href="{{ p.url }}" data-open="{{ p.id }}" aria-label="Quick view {{ p.title | escape }}"><span class="cm-g"><span class="gsw">{% render 'garment', product: p %}</span></span></a>
-            <div class="qa"><span class="mono qa-l">QUICK ADD</span><div class="qa-s">
+            <div class="qa"><span class="mono qa-l">{{ 'product.quick_add' | t }}</span><div class="qa-s">
               {%- for v in p.variants limit: 6 -%}
                 <button class="qs" data-add="{{ v.id }}" data-label="{{ p.title | escape }} · {{ v.title | escape }}" {% unless v.available %}disabled style="opacity:.35"{% endunless %} aria-label="Add {{ v.title | escape }} to cart">{{ v.title | split: ' / ' | first }}</button>
               {%- endfor -%}
@@ -52,7 +52,7 @@
           </div>
           <div class="ci">
             <div><span class="mono muted" style="font-size:10.5px">{{ p.metafields.custom.code }}</span><h3>{{ p.title }}</h3><span class="muted" style="font-size:11.5px"><span class="jp">{{ p.metafields.custom.name_jp }}</span>{% if p.metafields.custom.name_gr %} · {{ p.metafields.custom.name_gr }}{% endif %}</span></div>
-            <div class="ci-r"><span class="price">{{ p.price | money_without_trailing_zeros }}</span><a class="qv" href="{{ p.url }}" data-open="{{ p.id }}">QUICK VIEW</a></div>
+            <div class="ci-r"><span class="price">{{ p.price | money_without_trailing_zeros }}</span><a class="qv" href="{{ p.url }}" data-open="{{ p.id }}">{{ 'product.quick_view' | t }}</a></div>
           </div>
         </article>
       {%- else -%}

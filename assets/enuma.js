@@ -2,6 +2,8 @@
 (function () {
   'use strict';
   var EE = window.EE || {};
+  var TX = EE.t || {};
+  function t(k, fb) { return TX[k] || fb; }
   var $ = function (s, c) { return (c || document).querySelector(s); };
   var $$ = function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
   function clamp(v, a, b) { return v < a ? a : v > b ? b : v; }
@@ -55,6 +57,33 @@
   }
   function garment(id) { var t = document.querySelector('template[data-g="' + id + '"]'); return t ? t.innerHTML : ''; }
   function photo(id) { var t = document.querySelector('template[data-gf="' + id + '"]'); return t ? t.innerHTML : ''; }
+
+  /* ---------- dialogs: focus trap + restore ---------- */
+  var FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]),select,textarea,[tabindex]:not([tabindex="-1"])';
+  var trapStack = [];
+  function trapOpen(el) {
+    trapStack.push({ el: el, back: document.activeElement });
+    var first = $$(FOCUSABLE, el).filter(function (n) { return n.offsetParent !== null; })[0];
+    (el.querySelector('.close') || first || el).focus({ preventScroll: true });
+  }
+  function trapClose(el) {
+    for (var i = trapStack.length - 1; i >= 0; i--) {
+      if (trapStack[i].el === el) {
+        var back = trapStack[i].back; trapStack.splice(i, 1);
+        if (back && back.focus && document.contains(back)) back.focus({ preventScroll: true });
+        return;
+      }
+    }
+  }
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Tab' || !trapStack.length) return;
+    var el = trapStack[trapStack.length - 1].el;
+    var list = $$(FOCUSABLE, el).filter(function (n) { return n.offsetParent !== null; });
+    if (!list.length) { e.preventDefault(); return; }
+    var first = list[0], last = list[list.length - 1];
+    if (e.shiftKey && (document.activeElement === first || !el.contains(document.activeElement))) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && (document.activeElement === last || !el.contains(document.activeElement))) { e.preventDefault(); first.focus(); }
+  });
 
   /* ---------- scroll lock ---------- */
   var locks = 0;
@@ -182,7 +211,7 @@
       var sec = Math.round((1 - fq) * 120);
       var txt = '0' + Math.floor(sec / 60) + ':' + ('0' + (sec % 60)).slice(-2);
       if (H.cd.textContent !== txt) H.cd.textContent = txt;
-      var lb = fq >= 0.999 ? 'ΣΤΗΝ ΑΠΟΒΑΘΡΑ · ARRIVED · 到着' : 'ΑΦΙΞΗ ΣΕ · ARRIVING · まもなく';
+      var lb = fq >= 0.999 ? t('arrived', 'ARRIVED') : t('arriving', 'ARRIVING');
       if (H.cdl.textContent !== lb) H.cdl.textContent = lb;
     }
   }
@@ -282,22 +311,22 @@
     $$('[data-cart-total]').forEach(function (el) { el.textContent = money(c.total_price); });
     if (!linesEl) return;
     if (!c.items.length) {
-      linesEl.innerHTML = '<div style="padding:56px 0;display:flex;flex-direction:column;gap:16px"><span style="font-size:28px;font-weight:900;letter-spacing:-.03em">The platform is empty.</span><span class="muted" style="font-size:15px">Nothing on board yet. The rail is one scroll away.</span><a class="btn btn-y" href="' + esc((EE.routes.root || '/').replace(/\/?$/, '/')) + '#shop" data-cart-close style="align-self:flex-start">BACK TO THE RAIL</a></div>';
+      linesEl.innerHTML = '<div style="padding:56px 0;display:flex;flex-direction:column;gap:16px"><span style="font-size:28px;font-weight:900;letter-spacing:-.03em">' + esc(t('emptyTitle', 'The platform is empty.')) + '</span><span class="muted" style="font-size:15px">' + esc(t('emptyText', '')) + '</span><a class="btn btn-y" href="' + esc((EE.routes.root || '/').replace(/\/?$/, '/')) + '#shop" data-cart-close style="align-self:flex-start">' + esc(t('backToRail', 'BACK TO THE RAIL')) + '</a></div>';
       dfoot.hidden = true; return;
     }
     dfoot.hidden = false;
     linesEl.innerHTML = c.items.map(function (l) {
       var g = photo(l.product_id) || garment(l.product_id) || (l.image ? '<img class="g-img" src="' + esc(l.image) + '" alt="">' : '');
-      var size = l.variant_title ? 'SIZE ' + esc(l.variant_title) + ' · ' : '';
+      var size = l.variant_title ? esc(t('size', 'SIZE')) + ' ' + esc(l.variant_title) + ' · ' : '';
       var code = products[l.product_id] && products[l.product_id].code ? esc(products[l.product_id].code) + ' · ' : '';
       return '<div class="line"><div class="th">' + g + '</div><div style="display:flex;flex-direction:column;gap:8px">' +
         '<div style="display:flex;justify-content:space-between;gap:12px"><b style="font-size:15px">' + esc(l.product_title) + '</b><span class="price">' + money(l.final_line_price) + '</span></div>' +
         '<span class="mono muted" style="font-size:10.5px">' + code + size + money(l.final_price) + '</span>' +
         '<div style="display:flex;align-items:center;justify-content:space-between"><div class="qty">' +
-        '<button data-q="' + esc(l.key) + '" data-d="-1" aria-label="Decrease quantity"><svg width="12" height="2" viewBox="0 0 12 2" aria-hidden="true"><path d="M0 1h12" stroke="currentColor" stroke-width="2"/></svg></button>' +
+        '<button data-q="' + esc(l.key) + '" data-d="-1" aria-label="' + esc(t('dec', 'Decrease quantity')) + '"><svg width="12" height="2" viewBox="0 0 12 2" aria-hidden="true"><path d="M0 1h12" stroke="currentColor" stroke-width="2"/></svg></button>' +
         '<span>' + l.quantity + '</span>' +
-        '<button data-q="' + esc(l.key) + '" data-d="1" aria-label="Increase quantity"><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M0 6h12M6 0v12" stroke="currentColor" stroke-width="2"/></svg></button></div>' +
-        '<button class="rm" data-q="' + esc(l.key) + '" data-rm="1">REMOVE</button></div></div></div>';
+        '<button data-q="' + esc(l.key) + '" data-d="1" aria-label="' + esc(t('inc', 'Increase quantity')) + '"><svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M0 6h12M6 0v12" stroke="currentColor" stroke-width="2"/></svg></button></div>' +
+        '<button class="rm" data-q="' + esc(l.key) + '" data-rm="1">' + esc(t('remove', 'REMOVE')) + '</button></div></div></div>';
     }).join('');
   }
   function fetchCart() { return fetch(EE.routes.cart, { headers: { Accept: 'application/json' } }).then(function (r) { return r.json(); }).then(renderCart); }
@@ -305,7 +334,7 @@
     return fetch(EE.routes.add, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ items: [{ id: Number(id), quantity: qty || 1 }] }) })
       .then(function (r) { return r.json().then(function (j) { if (!r.ok) throw new Error(j.description || j.message || 'Could not add'); return j; }); })
       .then(fetchCart)
-      .then(function () { if (label) toast('ADDED · ' + label); })
+      .then(function () { if (label) toast(t('cartAdded', 'ADDED') + ' · ' + label); })
       .catch(function (e) { toast(String(e.message || e).toUpperCase()); });
   }
   function changeLine(key, qty) {
@@ -315,11 +344,11 @@
   function openCart() {
     if (!drawer) return false;
     closeOverlay(true); hideToast(); closeMenu();
-    if (drawer.hidden) { drawer.hidden = false; scrim.hidden = false; lock(true); }
+    if (drawer.hidden) { drawer.hidden = false; scrim.hidden = false; lock(true); trapOpen(drawer); }
     if (!cartState) fetchCart();
     return true;
   }
-  function closeCart() { if (drawer && !drawer.hidden) { drawer.hidden = true; scrim.hidden = true; lock(false); } }
+  function closeCart() { if (drawer && !drawer.hidden) { drawer.hidden = true; scrim.hidden = true; lock(false); trapClose(drawer); } }
   function toast(msg) {
     if (!toastEl) return;
     $('[data-toast]', toastEl).textContent = msg; toastEl.hidden = false;
@@ -357,18 +386,18 @@
     sz.style.gridTemplateColumns = 'repeat(' + Math.min(6, p.variants.length) + ',minmax(0,1fr))';
     sz.innerHTML = p.variants.map(function (v) { return '<button class="osz" data-v="' + v.id + '" aria-pressed="false"' + (v.available ? '' : ' disabled style="opacity:.35"') + '>' + esc(v.size) + '</button>'; }).join('');
     f('err').hidden = true;
-    var sp = [['FABRIC', p.fabric], ['FIT', p.fit], ['COLOUR', p.colour], ['SHIPS', '2–4 working days, Greece · 5–9 EU']].filter(function (x) { return x[1]; });
-    f('specs').innerHTML = sp.map(function (x) { return '<dt>' + x[0] + '</dt><dd>' + esc(x[1]) + '</dd>'; }).join('');
-    setAddLabel(avail.length ? 'ADD TO CART — ' + money(p.price) : 'SOLD OUT · ΕΞΑΝΤΛΗΘΗΚΕ');
+    var sp = [[t('fabric', 'FABRIC'), p.fabric], [t('fit', 'FIT'), p.fit], [t('colour', 'COLOUR'), p.colour], [t('ships', 'SHIPS'), t('shipsValue', '')]].filter(function (x) { return x[1]; });
+    f('specs').innerHTML = sp.map(function (x) { return '<dt>' + esc(x[0]) + '</dt><dd>' + esc(x[1]) + '</dd>'; }).join('');
+    setAddLabel(avail.length ? t('addToCart', 'ADD TO CART') + ' — ' + money(p.price) : t('soldOut', 'SOLD OUT'));
     f('add').disabled = !avail.length;
     ov.setAttribute('aria-label', p.name);
     ov.hidden = false; lock(true); closeMenu();
     // restart entrance animations
     $$('.ov-g, .ov-jp, .ov-panel, .ov-bg img', ov).concat([ov]).forEach(function (el) { el.style.animation = 'none'; void el.offsetWidth; el.style.animation = ''; });
-    var cb = $('.close', ov); if (cb) cb.focus({ preventScroll: true });
+    trapOpen(ov);
     return true;
   }
-  function closeOverlay(silent) { if (ov && !ov.hidden) { ov.hidden = true; lock(false); } }
+  function closeOverlay() { if (ov && !ov.hidden) { ov.hidden = true; lock(false); trapClose(ov); } }
   if (ov) {
     f('sizes').addEventListener('click', function (e) {
       var b = e.target.closest('[data-v]'); if (!b || b.disabled) return;
@@ -382,8 +411,8 @@
       var btn = f('add'); btn.setAttribute('aria-busy', 'true');
       addToCart(sel, 1).then(function () {
         btn.removeAttribute('aria-busy');
-        setAddLabel('ADDED · ΠΡΟΣΤΕΘΗΚΕ · 追加済み');
-        clearTimeout(addedT); addedT = setTimeout(function () { if (cur) setAddLabel('ADD TO CART — ' + money(cur.price)); }, 1800);
+        setAddLabel(t('added', 'ADDED'));
+        clearTimeout(addedT); addedT = setTimeout(function () { if (cur) setAddLabel(t('addToCart', 'ADD TO CART') + ' — ' + money(cur.price)); }, 1800);
       });
     });
   }
@@ -427,7 +456,7 @@
       if (!idIn.value) { if (errEl) errEl.hidden = false; return; }
       var orig = addB.textContent; addB.setAttribute('aria-busy', 'true');
       addToCart(idIn.value, 1).then(function () {
-        addB.removeAttribute('aria-busy'); addB.textContent = 'ADDED · ΠΡΟΣΤΕΘΗΚΕ · 追加済み';
+        addB.removeAttribute('aria-busy'); addB.textContent = t('added', 'ADDED');
         setTimeout(function () { addB.textContent = orig; }, 1800);
       });
     });

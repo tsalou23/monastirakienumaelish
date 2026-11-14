@@ -14,15 +14,15 @@
     <div class="f-grid">
       <p class="f-big">{{ section.settings.big | newline_to_br }}</p>
       <div class="f-news">
-        <label for="news" class="mono">ΕΠΟΜΕΝΗ ΑΝΑΧΩΡΗΣΗ · NEXT DEPARTURE · 次の発車</label>
+        <label for="news" class="mono">{{ 'newsletter.label' | t }}</label>
         <span style="font-size:22px;font-weight:800;letter-spacing:-.02em">{{ section.settings.news_title }}</span>
         {%- form 'customer', id: 'ee-news' -%}
           <input type="hidden" name="contact[tags]" value="newsletter">
           {%- if form.posted_successfully? -%}
-            <span class="mono amber" style="font-size:13px">ΕΠΙΒΙΒΑΣΤΗΚΕΣ · YOU'RE ON BOARD · ご乗車ありがとうございます</span>
+            <span class="mono amber" style="font-size:13px">{{ 'newsletter.success' | t }}</span>
           {%- else -%}
-            <div class="f-in"><input id="news" class="inp" type="email" name="contact[email]" required autocomplete="email" placeholder="email@address.gr"><button class="btn btn-y" type="submit">BOARD</button></div>
-            {%- if form.errors -%}<span class="err">Enter a valid email address.</span>{%- endif -%}
+            <div class="f-in"><input id="news" class="inp" type="email" name="contact[email]" required autocomplete="email" placeholder="{{ 'newsletter.placeholder' | t }}"><button class="btn btn-y" type="submit">{{ 'newsletter.submit' | t }}</button></div>
+            {%- if form.errors -%}<span class="err">{{ 'newsletter.error' | t }}</span>{%- endif -%}
           {%- endif -%}
         {%- endform -%}
       </div>

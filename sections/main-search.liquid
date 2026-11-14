@@ -1,14 +1,15 @@
 <div class="page-wrap">
-  <h1>Search</h1>
+  <h1>{{ 'general.search.title' | t }}</h1>
   <form action="{{ routes.search_url }}" method="get" class="f-in" style="max-width:640px;margin-bottom:48px">
-    <input class="inp" type="search" name="q" value="{{ search.terms | escape }}" placeholder="Search the line" aria-label="Search">
+    <input class="inp" type="search" name="q" value="{{ search.terms | escape }}" placeholder="{{ 'general.search.placeholder' | t }}" aria-label="{{ 'general.search.title' | t }}">
     <input type="hidden" name="type" value="product">
-    <button class="btn btn-y" type="submit">SEARCH</button>
+    <button class="btn btn-y" type="submit">{{ 'general.search.submit' | t }}</button>
   </form>
 </div>
 {%- if search.performed -%}
+  {%- assign results_title = 'general.search.results' | t -%}
   {%- assign found = search.results | where: 'object_type', 'product' -%}
-  {% render 'product-grid', products: found, limit: 24, title: 'Results', show_tile: false %}
+  {% render 'product-grid', products: found, limit: 24, title: results_title, show_tile: false %}
 {%- endif -%}
 {% schema %}
 { "name": "Search", "settings": [] }
