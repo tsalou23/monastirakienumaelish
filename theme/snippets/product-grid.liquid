@@ -39,6 +39,7 @@
           {%- else -%}{%- assign tjp = '' -%}
         {%- endcase -%}
         <article class="card{% if forloop.first %} feat{% endif %}" data-cat="{{ t | escape }}">
+          {% render 'product-data', product: p %}
           <div class="cm">
             {%- if forloop.first -%}<img class="cm-bg" src="{{ 'photo-1050.jpg' | asset_url }}" width="1200" height="1600" alt="" loading="lazy">{%- endif -%}
             {%- if t != blank -%}<span class="badge mono">{{ t }}{% if tjp != '' %} · {{ tjp }}{% endif %}</span>{%- endif -%}

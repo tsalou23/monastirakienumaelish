@@ -1,0 +1,8 @@
+{%- comment -%}
+  Fetched by enuma.js with the Section Rendering API: /products/<handle>?section_id=ee-product-data
+  Not meant to be added to templates.
+{%- endcomment -%}
+{%- if product -%}{% render 'product-data', product: product %}{%- endif -%}
+{% schema %}
+{ "name": "Product data (internal)", "settings": [] }
+{% endschema %}

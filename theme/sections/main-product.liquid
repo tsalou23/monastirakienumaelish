@@ -1,6 +1,7 @@
 {%- assign p = product -%}
 {%- assign mf = p.metafields.custom -%}
 <div class="pdp">
+  {% render 'product-data', product: p %}
   <div class="ov-bg"><img src="{{ 'photo-1050.jpg' | asset_url }}" width="1200" height="1600" alt=""></div>
   <div class="ov-fig">
     {%- if mf.name_jp -%}<span class="ov-jp jp vt">{{ mf.name_jp }}</span>{%- endif -%}

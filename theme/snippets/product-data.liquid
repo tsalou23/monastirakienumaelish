@@ -1,0 +1,8 @@
+{%- comment -%}
+  Everything the overlay, quick add and cart drawer need for one product.
+  Rendered beside each product a section shows; enuma.js collects and de-duplicates them.
+  Usage: {% render 'product-data', product: p %}
+{%- endcomment -%}
+<template data-g="{{ product.id }}">{% render 'garment', product: product %}</template>
+<template data-gf="{{ product.id }}">{% render 'product-photo', product: product, view: 'front', cls: 'g-img' %}</template>
+<script type="application/json" data-ee-product>{% render 'product-json', product: product %}</script>

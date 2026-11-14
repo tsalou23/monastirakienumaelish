@@ -10,3 +10,33 @@ Design prototype to port into the Shopify theme. Live design: https://claude.ai/
 - `docs/BRIEF.md` — the original creative brief.
 
 Placeholders: product names, prices, fabrics, shipping times and station names are invented — replace with real Shopify data.
+
+## Project layout
+
+```
+theme/      Shopify theme — the only folder that is pushed to the store
+  layout/     theme.liquid (shell, overlay + cart drawer), password.liquid
+  sections/   header, train-hero, clothing-rail, gap-strip, campaign, collection-grid, footer,
+              main-* page sections, ee-product-data (internal, fetched by JS)
+  snippets/   product-data (per-product JSON + visuals), product-json, product-photo,
+              garment (SVG placeholder), product-grid, campaign-img, fonts
+  assets/     enuma.css (tokens in :root), enuma.js, self-hosted woff2 fonts,
+              hero-f001–276.webp (24 fps train), photo-*.jpg, hoodie-*.webp
+seed/       GraphQL + JSON used to create the 8 Drop 01 products and the drop-01 collection
+design/     original design artifact (reference only)
+assets/     source media (video and generated frame folders are git-ignored)
+```
+
+## Workflow
+
+```bash
+cd theme
+shopify theme check --path .
+shopify theme push --store monastirakienumaelish.myshopify.com --theme 163065692262 --allow-live
+```
+
+- `config/settings_data.json` is in `.shopifyignore`, so pushes never overwrite theme-editor edits.
+  Pull editor changes first if you edited templates in the admin: `shopify theme pull --only templates/*.json`.
+- Product visuals: product image 1 = front, image 2 = side. Products without images fall back to
+  `assets/hoodie-front.webp` / `hoodie-side.webp` on the rail, overlay and cart.
+- Fonts are self-hosted (Commissioner, JetBrains Mono; Latin + Greek). Japanese uses system fonts.

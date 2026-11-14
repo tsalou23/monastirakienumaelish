@@ -30,8 +30,29 @@
   var root = $('#ee-root');
   if (root) root.setAttribute('data-js', '1');
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  /* ---------- product data (emitted per section, fetched on demand otherwise) ---------- */
   var products = {};
-  (EE.products || []).forEach(function (p) { products[p.id] = p; });
+  function collect(rootEl) {
+    $$('script[data-ee-product]', rootEl).forEach(function (el) {
+      try { var p = JSON.parse(el.textContent); if (!products[p.id]) products[p.id] = p; } catch (e) { /* malformed block: skip */ }
+    });
+  }
+  collect(document);
+  var dataBox = $('#ee-data'), pending = {};
+  function ensureProduct(id, handle) {
+    if (products[id] || !handle || !dataBox) return Promise.resolve(products[id]);
+    if (pending[handle]) return pending[handle];
+    var url = (EE.routes.root || '/').replace(/\/?$/, '/') + 'products/' + encodeURIComponent(handle) + '?section_id=ee-product-data';
+    pending[handle] = fetch(url, { headers: { Accept: 'text/html' } })
+      .then(function (r) { return r.ok ? r.text() : ''; })
+      .then(function (html) {
+        if (!html) return null;
+        var box = document.createElement('div'); box.innerHTML = html; // same-origin Shopify section markup
+        dataBox.appendChild(box); collect(box); return products[id];
+      })
+      .catch(function () { return null; });
+    return pending[handle];
+  }
   function garment(id) { var t = document.querySelector('template[data-g="' + id + '"]'); return t ? t.innerHTML : ''; }
   function photo(id) { var t = document.querySelector('template[data-gf="' + id + '"]'); return t ? t.innerHTML : ''; }
 
@@ -65,7 +86,10 @@
   // Phones / data-saver: every second frame (12 fps of footage) — still dense enough to scrub smoothly.
   var conn = navigator.connection || {};
   var STEP = (window.innerWidth < 700 || conn.saveData) ? 2 : 1;
-  var FR = (EE.frames || []).filter(function (_, i) { return i % STEP === 0; });
+  var framesEl = $('script[data-ee-frames]');
+  var FR = [];
+  try { FR = JSON.parse(framesEl ? framesEl.textContent : '[]'); } catch (e) { FR = []; }
+  FR = FR.filter(function (_, i) { return i % STEP === 0; });
   var img = [], sp = 0, lastDraw = '', dirty = true;
   if (H && FR.length) {
     var N = FR.length, order = [], seen = {};
@@ -85,7 +109,9 @@
       };
       im.onerror = next; im.src = FR[idx];
     };
-    for (var c = 0; c < 6; c++) next();
+    next(); // first frame right away
+    var startRest = function () { for (var c = 0; c < 5; c++) next(); };
+    if (document.readyState === 'complete') startRest(); else window.addEventListener('load', startRest, { once: true });
   }
   function near(i) { for (var d = 0; d < FR.length; d++) { if (img[i - d]) return img[i - d]; if (img[i + d]) return img[i + d]; } return null; }
 
@@ -246,11 +272,17 @@
     });
   }
   function renderCart(c) {
+    var missing = c.items.filter(function (l) { return !products[l.product_id] && l.handle; });
+    if (missing.length) Promise.all(missing.map(function (l) { return ensureProduct(l.product_id, l.handle); }))
+      .then(function () { if (cartState === c) drawCart(c); });
+    drawCart(c);
+  }
+  function drawCart(c) {
     cartState = c; setCount(c.item_count);
     $$('[data-cart-total]').forEach(function (el) { el.textContent = money(c.total_price); });
     if (!linesEl) return;
     if (!c.items.length) {
-      linesEl.innerHTML = '<div style="padding:56px 0;display:flex;flex-direction:column;gap:16px"><span style="font-size:28px;font-weight:900;letter-spacing:-.03em">The platform is empty.</span><span class="muted" style="font-size:15px">Nothing on board yet. The rail is one scroll away.</span><a class="btn btn-y" href="/#shop" data-cart-close style="align-self:flex-start">BACK TO THE RAIL</a></div>';
+      linesEl.innerHTML = '<div style="padding:56px 0;display:flex;flex-direction:column;gap:16px"><span style="font-size:28px;font-weight:900;letter-spacing:-.03em">The platform is empty.</span><span class="muted" style="font-size:15px">Nothing on board yet. The rail is one scroll away.</span><a class="btn btn-y" href="' + esc((EE.routes.root || '/').replace(/\/?$/, '/')) + '#shop" data-cart-close style="align-self:flex-start">BACK TO THE RAIL</a></div>';
       dfoot.hidden = true; return;
     }
     dfoot.hidden = false;
