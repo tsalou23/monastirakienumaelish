@@ -1,1 +1,96 @@
-{ "general": { "password_page": { "login_form_heading": "Enter store using password" } } }
+{
+  "general": {
+    "close": "ΚΛΕΙΣΙΜΟ · CLOSE · 閉じる",
+    "close_short": "CLOSE",
+    "close_product": "Close product view",
+    "close_cart": "Close cart",
+    "open_cart": "Open cart",
+    "menu": "MENU",
+    "cart": "CART",
+    "shop": "SHOP",
+    "collection": "COLLECTION",
+    "about": "ABOUT",
+    "next_stop": "ΕΠΟΜΕΝΗ ΣΤΑΣΗ · NEXT · 次は",
+    "back_to_top": "back to top",
+    "password_page": {
+      "login_form_heading": "Enter store using password",
+      "soon": "ΣΥΝΤΟΜΑ · SOON · まもなく",
+      "opens_soon_html": "The platform<br>opens soon.",
+      "password": "Password",
+      "enter": "ENTER",
+      "wrong": "Wrong password."
+    },
+    "not_found": {
+      "kicker": "404 · ΛΑΘΟΣ ΣΤΑΣΗ · 駅が違います",
+      "title": "Wrong station.",
+      "text": "This platform doesn't exist. The next train goes back to the start.",
+      "back": "BACK TO KIFISIA"
+    },
+    "search": {
+      "title": "Search",
+      "placeholder": "Search the line",
+      "submit": "SEARCH",
+      "results": "Results"
+    }
+  },
+  "hero": {
+    "arriving": "ΑΦΙΞΗ ΣΕ · ARRIVING · まもなく",
+    "arrived": "ΣΤΗΝ ΑΠΟΒΑΘΡΑ · ARRIVED · 到着"
+  },
+  "product": {
+    "size": "ΜΕΓΕΘΟΣ · SIZE · サイズ",
+    "fit_note": "OVERSIZED FIT",
+    "choose_size": "Choose a size",
+    "choose_size_error": "Choose a size first · Διάλεξε μέγεθος · サイズを選択",
+    "add_to_cart": "ADD TO CART",
+    "added": "ADDED · ΠΡΟΣΤΕΘΗΚΕ · 追加済み",
+    "sold_out": "SOLD OUT · ΕΞΑΝΤΛΗΘΗΚΕ",
+    "view_cart": "VIEW CART",
+    "full_page": "FULL PRODUCT PAGE →",
+    "quick_add": "QUICK ADD",
+    "quick_view": "QUICK VIEW",
+    "fabric": "FABRIC",
+    "fit": "FIT",
+    "colour": "COLOUR",
+    "ships": "SHIPS",
+    "ships_value": "2–4 working days, Greece · 5–9 EU"
+  },
+  "cart": {
+    "title": "Cart",
+    "title_sub": "ΚΑΛΑΘΙ · カート",
+    "subtotal": "SUBTOTAL · ΣΥΝΟΛΟ · 小計",
+    "shipping_note": "Shipping and taxes calculated at checkout.",
+    "checkout": "CHECKOUT",
+    "view_full": "VIEW FULL CART",
+    "empty_title": "The platform is empty.",
+    "empty_text": "Nothing on board yet. The rail is one scroll away.",
+    "back_to_rail": "BACK TO THE RAIL",
+    "remove": "REMOVE",
+    "size": "SIZE",
+    "added": "ADDED",
+    "update": "UPDATE",
+    "qty": "QTY",
+    "increase": "Increase quantity",
+    "decrease": "Decrease quantity"
+  },
+  "newsletter": {
+    "label": "ΕΠΟΜΕΝΗ ΑΝΑΧΩΡΗΣΗ · NEXT DEPARTURE · 次の発車",
+    "placeholder": "email@address.gr",
+    "submit": "BOARD",
+    "success": "ΕΠΙΒΙΒΑΣΤΗΚΕΣ · YOU'RE ON BOARD · ご乗車ありがとうございます",
+    "error": "Enter a valid email address."
+  },
+  "gift_card": {
+    "title": "Your gift card",
+    "balance": "Balance",
+    "code": "Code",
+    "expires": "Expires on {{ date }}",
+    "expired": "This gift card has expired.",
+    "disabled": "This gift card is disabled.",
+    "copy": "COPY CODE",
+    "copied": "COPIED",
+    "shop": "START SHOPPING",
+    "print": "PRINT",
+    "wallet": "Add to Apple Wallet"
+  }
+}

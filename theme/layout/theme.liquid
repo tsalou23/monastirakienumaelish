@@ -25,7 +25,7 @@
   {%- comment -%} Product overlay (filled by enuma.js) {%- endcomment -%}
   <div class="ov" id="ee-ov" role="dialog" aria-modal="true" aria-label="Product" hidden>
     <div class="ov-bg"><img src="{{ 'photo-1050.jpg' | asset_url }}" width="1200" height="1600" alt=""></div>
-    <button class="ov-scrim" data-ov-close aria-label="Close product view"></button>
+    <button class="ov-scrim" data-ov-close aria-label="{{ 'general.close_product' | t }}"></button>
     <div class="ov-in">
       <div class="ov-fig">
         <span class="ov-jp jp vt" data-f="jp"></span>
@@ -38,33 +38,33 @@
         <span class="ov-price" data-f="price"></span>
         <p class="ov-desc" data-f="desc"></p>
         <div style="display:flex;flex-direction:column;gap:10px">
-          <div style="display:flex;justify-content:space-between" class="mono"><span style="font-size:11px">ΜΕΓΕΘΟΣ · SIZE · サイズ</span><span class="muted" style="font-size:11px">OVERSIZED FIT</span></div>
-          <div class="szs" role="group" aria-label="Choose a size" data-f="sizes"></div>
-          <p class="err" role="alert" data-f="err" hidden>Choose a size first · Διάλεξε μέγεθος · サイズを選択</p>
+          <div style="display:flex;justify-content:space-between" class="mono"><span style="font-size:11px">{{ 'product.size' | t }}</span><span class="muted" style="font-size:11px">{{ 'product.fit_note' | t }}</span></div>
+          <div class="szs" role="group" aria-label="{{ 'product.choose_size' | t }}" data-f="sizes"></div>
+          <p class="err" role="alert" data-f="err" hidden>{{ 'product.choose_size_error' | t }}</p>
         </div>
         <button class="btn btn-y" data-f="add" style="height:60px;width:100%"></button>
-        <button class="btn btn-l" data-cart-open style="width:100%"><span>VIEW CART (<span data-cart-count>{{ cart.item_count }}</span>)</span></button>
-        <a class="mono muted" data-f="link" style="font-size:11px">FULL PRODUCT PAGE →</a>
+        <button class="btn btn-l" data-cart-open style="width:100%"><span>{{ 'product.view_cart' | t }} (<span data-cart-count>{{ cart.item_count }}</span>)</span></button>
+        <a class="mono muted" data-f="link" style="font-size:11px">{{ 'product.full_page' | t }}</a>
         <dl class="specs" data-f="specs"></dl>
       </div>
     </div>
-    <button class="close" data-ov-close><span>ΚΛΕΙΣΙΜΟ · CLOSE · 閉じる</span><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="2"/></svg></button>
+    <button class="close" data-ov-close><span>{{ 'general.close' | t }}</span><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="2"/></svg></button>
   </div>
 
   {%- comment -%} Cart drawer {%- endcomment -%}
-  <button class="scrim" id="ee-scrim" data-cart-close aria-label="Close cart" hidden></button>
-  <aside class="drawer" id="ee-drawer" role="dialog" aria-modal="true" aria-label="Cart" hidden>
-    <div class="d-head"><span style="display:flex;flex-direction:column;gap:4px"><b style="font-size:20px;font-weight:900">Cart (<span data-cart-count>{{ cart.item_count }}</span>)</b><small class="mono muted" style="font-size:10.5px">ΚΑΛΑΘΙ · カート</small></span><button class="close" style="position:static" data-cart-close><span>CLOSE</span><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="2"/></svg></button></div>
+  <button class="scrim" id="ee-scrim" data-cart-close aria-label="{{ 'general.close_cart' | t }}" hidden></button>
+  <aside class="drawer" id="ee-drawer" role="dialog" aria-modal="true" aria-label="{{ 'cart.title' | t }}" hidden>
+    <div class="d-head"><span style="display:flex;flex-direction:column;gap:4px"><b style="font-size:20px;font-weight:900">{{ 'cart.title' | t }} (<span data-cart-count>{{ cart.item_count }}</span>)</b><small class="mono muted" style="font-size:10.5px">{{ 'cart.title_sub' | t }}</small></span><button class="close" style="position:static" data-cart-close><span>{{ 'general.close_short' | t }}</span><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="2"/></svg></button></div>
     <div class="d-body" id="ee-lines"></div>
     <div class="d-foot" id="ee-dfoot" hidden>
-      <div style="display:flex;justify-content:space-between;align-items:baseline"><span class="mono muted" style="font-size:11px">SUBTOTAL · ΣΥΝΟΛΟ · 小計</span><span class="price" style="font-size:20px" data-cart-total></span></div>
-      <span class="muted" style="font-size:13px">Shipping and taxes calculated at checkout.</span>
-      <form action="{{ routes.cart_url }}" method="post"><button class="btn btn-y" type="submit" name="checkout" style="width:100%;height:60px"><span>CHECKOUT — <span data-cart-total></span></span></button></form>
-      <a class="mono muted" href="{{ routes.cart_url }}" style="font-size:11px;text-align:center">VIEW FULL CART</a>
+      <div style="display:flex;justify-content:space-between;align-items:baseline"><span class="mono muted" style="font-size:11px">{{ 'cart.subtotal' | t }}</span><span class="price" style="font-size:20px" data-cart-total></span></div>
+      <span class="muted" style="font-size:13px">{{ 'cart.shipping_note' | t }}</span>
+      <form action="{{ routes.cart_url }}" method="post"><button class="btn btn-y" type="submit" name="checkout" style="width:100%;height:60px"><span>{{ 'cart.checkout' | t }} — <span data-cart-total></span></span></button></form>
+      <a class="mono muted" href="{{ routes.cart_url }}" style="font-size:11px;text-align:center">{{ 'cart.view_full' | t }}</a>
     </div>
   </aside>
 
-  <div class="toast" id="ee-toast" role="status" hidden><span data-toast></span><button class="btn btn-d" style="height:40px;padding:0 14px;font-size:11px" data-cart-open>VIEW CART</button></div>
+  <div class="toast" id="ee-toast" role="status" hidden><span data-toast></span><button class="btn btn-d" style="height:40px;padding:0 14px;font-size:11px" data-cart-open>{{ 'product.view_cart' | t }}</button></div>
 </div>
 
 {%- comment -%}
@@ -75,6 +75,15 @@
 <script>
   window.EE = {
     moneyFormat: {{ shop.money_format | json }},
+    t: {
+      arriving: {{ 'hero.arriving' | t | json }}, arrived: {{ 'hero.arrived' | t | json }},
+      addToCart: {{ 'product.add_to_cart' | t | json }}, added: {{ 'product.added' | t | json }}, soldOut: {{ 'product.sold_out' | t | json }},
+      fabric: {{ 'product.fabric' | t | json }}, fit: {{ 'product.fit' | t | json }}, colour: {{ 'product.colour' | t | json }},
+      ships: {{ 'product.ships' | t | json }}, shipsValue: {{ 'product.ships_value' | t | json }},
+      emptyTitle: {{ 'cart.empty_title' | t | json }}, emptyText: {{ 'cart.empty_text' | t | json }}, backToRail: {{ 'cart.back_to_rail' | t | json }},
+      remove: {{ 'cart.remove' | t | json }}, size: {{ 'cart.size' | t | json }}, cartAdded: {{ 'cart.added' | t | json }},
+      inc: {{ 'cart.increase' | t | json }}, dec: {{ 'cart.decrease' | t | json }}
+    },
     routes: {
       root: {{ routes.root_url | json }},
       add: {{ routes.cart_add_url | append: '.js' | json }},

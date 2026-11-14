@@ -398,3 +398,4 @@ button{font:inherit;color:inherit}
 .hg img{transition:opacity .3s}
 .g-front,.slot:hover .g-side{transform:none}
 }
+.pdp-title{margin:0;font-size:44px;font-weight:900;letter-spacing:-.045em;line-height:.92}

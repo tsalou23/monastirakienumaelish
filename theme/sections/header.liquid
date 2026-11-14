@@ -1,19 +1,19 @@
 {%- assign home = routes.root_url -%}
 <header class="nav" id="ee-nav" data-solid="{% if template.name == 'index' %}0{% else %}1{% endif %}">
-  <a class="logo" href="{{ home }}#top" aria-label="{{ shop.name }}, back to top">
+  <a class="logo" href="{{ home }}#top" aria-label="{{ shop.name | escape }}, {{ 'general.back_to_top' | t }}">
     <span class="lb lb-y">{{ section.settings.badge }}</span>
     <span style="display:flex;flex-direction:column;gap:3px"><b>{{ section.settings.brand }}</b><small class="jp">{{ section.settings.brand_sub }}</small></span>
   </a>
-  <div class="nst mono" aria-live="polite"><span class="dot"></span><span>ΕΠΟΜΕΝΗ ΣΤΑΣΗ · NEXT · 次は</span><strong id="ee-st"></strong></div>
+  <div class="nst mono" aria-live="polite"><span class="dot"></span><span>{{ 'general.next_stop' | t }}</span><strong id="ee-st"></strong></div>
   <nav class="nl" aria-label="Main">
-    <a href="{{ home }}#shop">SHOP</a>
-    <a href="{{ home }}#collection">COLLECTION</a>
-    <a href="{{ home }}#about">ABOUT</a>
+    <a href="{{ home }}#shop">{{ 'general.shop' | t }}</a>
+    <a href="{{ home }}#collection">{{ 'general.collection' | t }}</a>
+    <a href="{{ home }}#about">{{ 'general.about' | t }}</a>
   </nav>
   <div style="display:flex;gap:8px;align-items:center">
-    <button class="menub" id="ee-menub" aria-expanded="false">MENU</button>
-    <a class="cartb" href="{{ routes.cart_url }}" data-cart-open aria-label="Open cart">
-      <span>CART</span><span class="cnt" data-cart-count>{{ cart.item_count }}</span>
+    <button class="menub" id="ee-menub" aria-expanded="false">{{ 'general.menu' | t }}</button>
+    <a class="cartb" href="{{ routes.cart_url }}" data-cart-open aria-label="{{ 'general.open_cart' | t }}">
+      <span>{{ 'general.cart' | t }}</span><span class="cnt" data-cart-count>{{ cart.item_count }}</span>
     </a>
   </div>
 </header>
