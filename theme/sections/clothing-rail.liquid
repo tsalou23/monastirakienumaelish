@@ -1,0 +1,67 @@
+{%- liquid
+  assign col = section.settings.collection
+  if col == blank
+    assign col = collections.all
+  endif
+  assign n = col.products_count
+  if n > section.settings.limit
+    assign n = section.settings.limit
+  endif
+-%}
+<section id="shop" class="rail" data-rail data-st="ΑΠΟΒΑΘΡΑ 1|PLATFORM 1|1番線" aria-label="The rail">
+  <div class="rail-stage" data-rail-stage>
+    <div class="rail-head">
+      <div class="sign"><span class="lb">1</span><span style="display:flex;flex-direction:column;gap:2px"><span class="g">Αποβάθρα 1</span><span class="e jp">Platform 1 · 1番線</span></span></div>
+      <div class="rbar" aria-hidden="true"><b data-rbar></b></div>
+      <span class="mono muted" style="font-size:11px">HOVER TO TURN · CLICK TO OPEN</span>
+    </div>
+    <div class="rail-body">
+      <div class="rail-track" data-track>
+        <div class="r-intro">
+          <span class="mono amber" style="font-size:12px">{{ section.settings.kicker | replace: '[count]', n }}</span>
+          <h2>{{ section.settings.title }}</h2>
+          <p>{{ section.settings.text }}</p>
+          <span class="jp muted" style="font-size:13px">回して、選んで、乗車。· Γύρισέ τα. Διάλεξε. Επιβίβαση.</span>
+        </div>
+        <div class="slots">
+          <div class="bar" aria-hidden="true"></div>
+          {%- for p in col.products limit: section.settings.limit -%}
+            <div class="slot">
+              <a class="gbtn" href="{{ p.url }}" data-open="{{ p.id }}" aria-label="Open {{ p.title | escape }}">
+                <span class="gw">
+                  <svg class="hook" viewBox="0 0 40 60" aria-hidden="true"><path d="M20 58 V40 C20 30 33 28 33 16 C33 6 22 2 15 9" stroke="#9A988F" stroke-width="3.2" fill="none" stroke-linecap="round"/><path d="M4 60 L20 46 L36 60" stroke="#9A988F" stroke-width="3.2" fill="none" stroke-linecap="round"/></svg>
+                  <span class="hg">
+                    {% render 'product-photo', product: p, view: 'side', cls: 'g-side' %}
+                    {% render 'product-photo', product: p, view: 'front', cls: 'g-front' %}
+                  </span>
+                </span>
+              </a>
+              <div class="slab"><span class="mono">{% if p.metafields.custom.code %}{{ p.metafields.custom.code }} · {% endif %}{{ p.price | money_without_trailing_zeros }}</span><span>{{ p.title }}</span><span class="jp muted" style="font-size:11px;font-weight:400">{{ p.metafields.custom.name_jp }}</span></div>
+            </div>
+          {%- else -%}
+            <div class="slot" style="width:420px;justify-content:center;padding-top:120px"><span class="mono muted" style="font-size:12px">ADD PRODUCTS TO THE STORE TO FILL THE RAIL</span></div>
+          {%- endfor -%}
+        </div>
+        <div class="r-end">
+          <span class="mono muted" style="font-size:11px">ΤΕΡΜΑ · END OF LINE · 終点</span>
+          <span class="t">Every piece, in one place.</span>
+          <a class="btn btn-y" href="#collection">FULL COLLECTION <svg width="18" height="12" viewBox="0 0 18 12" fill="none" aria-hidden="true"><path d="M1 6h15M11 1l5 5-5 5" stroke="currentColor" stroke-width="2"/></svg></a>
+        </div>
+      </div>
+    </div>
+    <div class="rail-foot mono"><span>ΑΠΟΣΤΑΣΗ ΑΣΦΑΛΕΙΑΣ · STAND BEHIND THE YELLOW LINE · 黄色い線の内側へ</span><span>E1 / 01–{{ n | prepend: '0' | slice: -2, 2 }}</span></div>
+  </div>
+</section>
+{% schema %}
+{
+  "name": "Clothing rail",
+  "settings": [
+    { "type": "collection", "id": "collection", "label": "Collection (default: all products)" },
+    { "type": "range", "id": "limit", "label": "Pieces on the rail", "min": 3, "max": 16, "step": 1, "default": 8 },
+    { "type": "text", "id": "kicker", "label": "Kicker ([count] = number of pieces)", "default": "DROP 01 · [count] PIECES · 終電" },
+    { "type": "text", "id": "title", "label": "Title", "default": "The last train leaves at 00:30." },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "Eight pieces hung on a rail, the way they would wait on a platform. Heavy cotton in tunnel black, platform grey, iron green and sodium yellow, cut in Athens and finished with Tokyo's patience." }
+  ],
+  "presets": [{ "name": "Clothing rail" }]
+}
+{% endschema %}

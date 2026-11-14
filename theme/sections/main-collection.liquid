@@ -1,0 +1,8 @@
+{%- paginate collection.products by 24 -%}
+<div style="height:64px"></div>
+{% render 'product-grid', products: collection.products, limit: 24, title: collection.title, show_tile: false %}
+{%- if paginate.pages > 1 -%}<div class="g-wrap mono" style="padding-bottom:80px;display:flex;gap:16px">{{ paginate | default_pagination }}</div>{%- endif -%}
+{%- endpaginate -%}
+{% schema %}
+{ "name": "Collection", "settings": [] }
+{% endschema %}

@@ -1,0 +1,1 @@
+mutation($product: ProductSetInput!) { productSet(input: $product, synchronous: true) { product { id handle } userErrors { field message } } }

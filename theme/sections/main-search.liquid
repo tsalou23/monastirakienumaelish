@@ -1,0 +1,15 @@
+<div class="page-wrap">
+  <h1>Search</h1>
+  <form action="{{ routes.search_url }}" method="get" class="f-in" style="max-width:640px;margin-bottom:48px">
+    <input class="inp" type="search" name="q" value="{{ search.terms | escape }}" placeholder="Search the line" aria-label="Search">
+    <input type="hidden" name="type" value="product">
+    <button class="btn btn-y" type="submit">SEARCH</button>
+  </form>
+</div>
+{%- if search.performed -%}
+  {%- assign found = search.results | where: 'object_type', 'product' -%}
+  {% render 'product-grid', products: found, limit: 24, title: 'Results', show_tile: false %}
+{%- endif -%}
+{% schema %}
+{ "name": "Search", "settings": [] }
+{% endschema %}

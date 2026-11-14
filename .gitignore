@@ -1,0 +1,18 @@
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
+
+# Shopify CLI local state
+.shopify/
+theme/.shopify/
+
+# Large source media (kept locally / in Shopify Files, not in git)
+assets/source/*.mov
+assets/source/*.mp4
+# Frame sequences are generated from the video; the shipped copy lives in theme/assets
+assets/hero-frames/
+assets/hero-frames-24fps/
+
+# Logs
+*.log
