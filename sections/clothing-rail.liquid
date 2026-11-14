@@ -27,6 +27,7 @@
           <div class="bar" aria-hidden="true"></div>
           {%- for p in col.products limit: section.settings.limit -%}
             <div class="slot">
+              {% render 'product-data', product: p %}
               <a class="gbtn" href="{{ p.url }}" data-open="{{ p.id }}" aria-label="Open {{ p.title | escape }}">
                 <span class="gw">
                   <svg class="hook" viewBox="0 0 40 60" aria-hidden="true"><path d="M20 58 V40 C20 30 33 28 33 16 C33 6 22 2 15 9" stroke="#9A988F" stroke-width="3.2" fill="none" stroke-linecap="round"/><path d="M4 60 L20 46 L36 60" stroke="#9A988F" stroke-width="3.2" fill="none" stroke-linecap="round"/></svg>

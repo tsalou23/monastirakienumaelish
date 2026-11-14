@@ -7,9 +7,8 @@
   <link rel="canonical" href="{{ canonical_url }}">
   <title>{{ page_title }}{% unless page_title contains shop.name %} — {{ shop.name }}{% endunless %}</title>
   {%- if page_description %}<meta name="description" content="{{ page_description | escape }}">{% endif %}
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Commissioner:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&family=Noto+Sans+JP:wght@400;700;900&display=swap">
+  {{ 'commissioner-latin.woff2' | asset_url | preload_tag: as: 'font', type: 'font/woff2', crossorigin: 'anonymous' }}
+  {% render 'fonts' %}
   {{ 'enuma.css' | asset_url | stylesheet_tag }}
   {{ content_for_header }}
 </head>
@@ -60,7 +59,7 @@
     <div class="d-foot" id="ee-dfoot" hidden>
       <div style="display:flex;justify-content:space-between;align-items:baseline"><span class="mono muted" style="font-size:11px">SUBTOTAL · ΣΥΝΟΛΟ · 小計</span><span class="price" style="font-size:20px" data-cart-total></span></div>
       <span class="muted" style="font-size:13px">Shipping and taxes calculated at checkout.</span>
-      <a class="btn btn-y" href="/checkout" style="width:100%;height:60px"><span>CHECKOUT — <span data-cart-total></span></span></a>
+      <form action="{{ routes.cart_url }}" method="post"><button class="btn btn-y" type="submit" name="checkout" style="width:100%;height:60px"><span>CHECKOUT — <span data-cart-total></span></span></button></form>
       <a class="mono muted" href="{{ routes.cart_url }}" style="font-size:11px;text-align:center">VIEW FULL CART</a>
     </div>
   </aside>
@@ -68,19 +67,20 @@
   <div class="toast" id="ee-toast" role="status" hidden><span data-toast></span><button class="btn btn-d" style="height:40px;padding:0 14px;font-size:11px" data-cart-open>VIEW CART</button></div>
 </div>
 
-{%- comment -%} Product data for overlay, quick add and cart thumbnails {%- endcomment -%}
-<div hidden aria-hidden="true">
-  {%- for p in collections.all.products limit: 50 -%}
-    <template data-g="{{ p.id }}">{% render 'garment', product: p %}</template>
-    <template data-gf="{{ p.id }}">{% render 'product-photo', product: p, view: 'front', cls: 'g-img' %}</template>
-  {%- endfor -%}
-</div>
+{%- comment -%}
+  Product data is emitted next to each product that a section renders (snippets/product-data.liquid).
+  Products that are not on the page (e.g. older cart lines) are fetched on demand via sections/ee-product-data.liquid.
+{%- endcomment -%}
+<div id="ee-data" hidden aria-hidden="true"></div>
 <script>
   window.EE = {
     moneyFormat: {{ shop.money_format | json }},
-    routes: { add: {{ routes.cart_add_url | append: '.js' | json }}, change: {{ routes.cart_change_url | append: '.js' | json }}, cart: {{ routes.cart_url | append: '.js' | json }} },
-    frames: [{%- for i in (1..276) -%}{%- assign n = i | prepend: '00' | slice: -3, 3 -%}{{ 'hero-f' | append: n | append: '.webp' | asset_url | json }}{% unless forloop.last %},{% endunless %}{%- endfor -%}],
-    products: [{%- for p in collections.all.products limit: 50 -%}{% render 'product-json', product: p %}{% unless forloop.last %},{% endunless %}{%- endfor -%}]
+    routes: {
+      root: {{ routes.root_url | json }},
+      add: {{ routes.cart_add_url | append: '.js' | json }},
+      change: {{ routes.cart_change_url | append: '.js' | json }},
+      cart: {{ routes.cart_url | append: '.js' | json }}
+    }
   };
 </script>
 <script src="{{ 'enuma.js' | asset_url }}" defer></script>
