@@ -1,0 +1,5 @@
+{%- if img != blank -%}
+<img src="{{ img | image_url: width: 1600 }}" srcset="{{ img | image_url: width: 800 }} 800w, {{ img | image_url: width: 1200 }} 1200w, {{ img | image_url: width: 1600 }} 1600w" sizes="(min-width: 900px) 60vw, 100vw" alt="{{ alt | escape }}" loading="lazy" width="1200" height="1600" data-par="{{ par }}">
+{%- else -%}
+<img src="{{ fallback | asset_url }}" alt="{{ alt | escape }}" loading="lazy" width="1200" height="1600" data-par="{{ par }}">
+{%- endif -%}

@@ -1,0 +1,48 @@
+{%- assign home = routes.root_url -%}
+<footer class="foot" data-st="ΤΕΡΜΑ|TERMINUS|終点">
+  <div class="g-wrap">
+    <div class="route">
+      <span class="jline" aria-hidden="true"></span>
+      <a class="stn" href="{{ home }}#top"><b>Κηφισιά</b><small class="mono">KIFISIA · START</small></a>
+      <a class="stn" href="{{ home }}#shop"><b>Αποβάθρα 1</b><small class="mono">SHOP · THE RAIL</small></a>
+      <a class="stn" href="{{ home }}#about"><b>Μοναστηράκι</b><small class="mono">ABOUT · CAMPAIGN</small></a>
+      <a class="stn" href="{{ home }}#collection"><b>Ομόνοια</b><small class="mono">COLLECTION</small></a>
+      <span class="gapline mono">· · · 9,560 KM · · ·</span>
+      <a class="stn" href="{{ routes.all_products_collection_url }}"><b class="jp">原宿</b><small class="mono">HARAJUKU · NEW IN</small></a>
+      <a class="stn" href="{{ routes.cart_url }}" data-cart-open><b class="jp">渋谷</b><small class="mono">SHIBUYA · CART (<span data-cart-count>{{ cart.item_count }}</span>)</small></a>
+    </div>
+    <div class="f-grid">
+      <p class="f-big">{{ section.settings.big | newline_to_br }}</p>
+      <div class="f-news">
+        <label for="news" class="mono">ΕΠΟΜΕΝΗ ΑΝΑΧΩΡΗΣΗ · NEXT DEPARTURE · 次の発車</label>
+        <span style="font-size:22px;font-weight:800;letter-spacing:-.02em">{{ section.settings.news_title }}</span>
+        {%- form 'customer', id: 'ee-news' -%}
+          <input type="hidden" name="contact[tags]" value="newsletter">
+          {%- if form.posted_successfully? -%}
+            <span class="mono amber" style="font-size:13px">ΕΠΙΒΙΒΑΣΤΗΚΕΣ · YOU'RE ON BOARD · ご乗車ありがとうございます</span>
+          {%- else -%}
+            <div class="f-in"><input id="news" class="inp" type="email" name="contact[email]" required autocomplete="email" placeholder="email@address.gr"><button class="btn btn-y" type="submit">BOARD</button></div>
+            {%- if form.errors -%}<span class="err">Enter a valid email address.</span>{%- endif -%}
+          {%- endif -%}
+        {%- endform -%}
+      </div>
+    </div>
+    <div class="f-bot mono">
+      <span>© {{ 'now' | date: '%Y' }} {{ shop.name | upcase }} · ΑΘΗΝΑ / 東京</span>
+      <span>
+        {%- for link in section.settings.menu.links -%}<a href="{{ link.url }}" style="color:inherit;text-decoration:none">{{ link.title | upcase }}</a>{% unless forloop.last %} · {% endunless %}{%- else -%}INSTAGRAM · TIKTOK · SHIPPING · RETURNS · PRIVACY{%- endfor -%}
+      </span>
+      <span>MADE AFTER THE LAST TRAIN</span>
+    </div>
+  </div>
+</footer>
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    { "type": "textarea", "id": "big", "label": "Big wordmark", "default": "Enuma\nElish" },
+    { "type": "text", "id": "news_title", "label": "Newsletter title", "default": "Get told before Drop 02 leaves the station." },
+    { "type": "link_list", "id": "menu", "label": "Bottom links menu", "default": "footer" }
+  ]
+}
+{% endschema %}

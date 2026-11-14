@@ -1,0 +1,14 @@
+{%- assign col = section.settings.collection -%}
+{%- if col == blank -%}{%- assign col = collections.all -%}{%- endif -%}
+{% render 'product-grid', products: col.products, limit: section.settings.limit, title: section.settings.title, show_tile: true %}
+{% schema %}
+{
+  "name": "Collection grid",
+  "settings": [
+    { "type": "collection", "id": "collection", "label": "Collection (default: all products)" },
+    { "type": "range", "id": "limit", "label": "Products", "min": 4, "max": 48, "step": 1, "default": 24 },
+    { "type": "text", "id": "title", "label": "Title", "default": "Collection" }
+  ],
+  "presets": [{ "name": "Collection grid" }]
+}
+{% endschema %}

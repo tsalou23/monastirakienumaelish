@@ -1,0 +1,11 @@
+<div class="page-wrap">
+  <h1>Lines</h1>
+  <div style="display:flex;flex-direction:column;gap:0;border-top:1px solid #232521">
+    {%- for c in collections -%}
+      <a href="{{ c.url }}" style="display:flex;justify-content:space-between;align-items:baseline;padding:22px 0;border-bottom:1px solid #232521;text-decoration:none;font-size:32px;font-weight:900;letter-spacing:-.03em">{{ c.title }} <small class="mono muted" style="font-size:11px">{{ c.products_count }} PIECES</small></a>
+    {%- endfor -%}
+  </div>
+</div>
+{% schema %}
+{ "name": "Collections list", "settings": [] }
+{% endschema %}

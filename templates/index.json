@@ -1,0 +1,35 @@
+{
+  "sections": {
+    "hero": {
+      "type": "train-hero",
+      "settings": {}
+    },
+    "rail": {
+      "type": "clothing-rail",
+      "settings": {
+        "collection": "drop-01"
+      }
+    },
+    "strip": {
+      "type": "gap-strip",
+      "settings": {}
+    },
+    "campaign": {
+      "type": "campaign",
+      "settings": {}
+    },
+    "grid": {
+      "type": "collection-grid",
+      "settings": {
+        "collection": "drop-01"
+      }
+    }
+  },
+  "order": [
+    "hero",
+    "rail",
+    "strip",
+    "campaign",
+    "grid"
+  ]
+}

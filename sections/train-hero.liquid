@@ -1,0 +1,42 @@
+<section id="top" class="hero" data-hero data-st="ΑΦΕΤΗΡΙΑ|DEPARTURE|始発" aria-label="Arriving train">
+  <div class="stage" data-stage>
+    <div class="interior" data-int>
+      <span class="mono amber" style="font-size:12px">ΑΝΟΙΓΟΥΝ ΟΙ ΠΟΡΤΕΣ · DOORS OPENING · ドアが開きます</span>
+      <span class="big">{{ section.settings.doors_title | newline_to_br }}</span>
+      <span class="jp" style="font-size:22px;font-weight:900;letter-spacing:.3em">終電 · ΤΕΛΕΥΤΑΙΟ ΔΡΟΜΟΛΟΓΙΟ</span>
+    </div>
+    <canvas class="cv" data-cv aria-hidden="true"></canvas>
+    <div class="hw hw-l" data-wl>
+      <span class="w">{{ section.settings.word_left }}</span>
+      <span class="s">{{ section.settings.text_left }}</span>
+    </div>
+    <div class="hw hw-r" data-wr>
+      <span class="w">{{ section.settings.word_right }}</span>
+      <span class="s jp">{{ section.settings.text_right }}</span>
+    </div>
+    <div class="board" data-board>
+      <div class="b-row"><span class="lb">1</span><span class="mono amber" style="font-size:13px;font-weight:700">ΚΗΦΙΣΙΑ ⇄ 渋谷</span><span class="mono amber-d" style="font-size:11px">KIFISIA ⇄ SHIBUYA</span></div>
+      <div class="b-row"><span class="mono amber-d" style="font-size:10.5px" data-cdl></span><span class="mono amber cd" data-cd></span></div>
+    </div>
+    <span class="vjp jp vt">アテネ地下鉄 × 東京</span>
+    <div class="prog" aria-hidden="true"><b data-prog></b><span style="top:-6px"></span><span style="top:calc(50% - 6px)"></span><span style="bottom:-6px"></span></div>
+    <div class="htag mono" data-tag>
+      <span>{{ section.settings.tagline }}</span>
+      <span class="hint"><i></i>ΚΥΛΙΣΤΕ · SCROLL · スクロール</span>
+    </div>
+  </div>
+</section>
+{% schema %}
+{
+  "name": "Train hero",
+  "settings": [
+    { "type": "text", "id": "word_left", "label": "Left word", "default": "ENUMA" },
+    { "type": "text", "id": "text_left", "label": "Left caption", "default": "ΕΝΟΥΜΑ ΕΛΙΣ — «όταν ψηλά». The oldest creation story, retold from the platform below." },
+    { "type": "text", "id": "word_right", "label": "Right word", "default": "ELISH" },
+    { "type": "text", "id": "text_right", "label": "Right caption", "default": "エヌマ・エリシュ — アテネの地下鉄から、東京の終電まで。" },
+    { "type": "textarea", "id": "doors_title", "label": "Doors-open title", "default": "Step in.\nLast train." },
+    { "type": "text", "id": "tagline", "label": "Bottom tagline", "default": "DROP 01 — 終電 LAST TRAIN — FW26" }
+  ],
+  "presets": [{ "name": "Train hero" }]
+}
+{% endschema %}

@@ -1,0 +1,24 @@
+{%- comment -%}
+  Hanger photo for a product.
+  view: 'front' | 'side'. Product images win (1st = front, 2nd = side);
+  without images the theme's hoodie photos (assets/hoodie-front.webp, hoodie-side.webp) stand in.
+  Usage: {% render 'product-photo', product: p, view: 'side', cls: 'g-side', lazy: false %}
+{%- endcomment -%}
+{%- liquid
+  assign src = blank
+  if product.images.size > 0
+    if view == 'side' and product.images.size > 1
+      assign src = product.images[1] | image_url: width: 800
+    else
+      assign src = product.images[0] | image_url: width: 800
+    endif
+  endif
+  if src == blank
+    if view == 'side'
+      assign src = 'hoodie-side.webp' | asset_url
+    else
+      assign src = 'hoodie-front.webp' | asset_url
+    endif
+  endif
+-%}
+<img class="{{ cls | default: 'g-img' }}" src="{{ src }}" alt="{% if view == 'front' %}{{ product.title | escape }}{% endif %}" width="800" height="800" {% if lazy %}loading="lazy"{% endif %} decoding="async" draggable="false">
